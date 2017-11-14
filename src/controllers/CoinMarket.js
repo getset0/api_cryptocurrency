@@ -5,13 +5,15 @@ const answerController = require("./Answer");
 
 const CoinMarket = {
   getNormalizedCoins(req, res) {
-    const {limit} = req.params;
+    const limit = parseInt(req.params.limit);
     return coinMarketCapInfo(limit)
       .then(data => {
-        console.log(data);
-        answerController.returnResponseSuccess(res, data)
+        return answerController.returnResponseSuccess(res, data)
       })
-      .catch(err => answerController.returnResponseError(res, err))
+      .catch(err => {
+        console.log(err)
+        return answerController.returnResponseError(res, err)
+      })
   }
 }
 

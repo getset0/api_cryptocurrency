@@ -1,5 +1,17 @@
 const CoinMarketCap = require('../models/CoinMarketCap');
-const {reduceValues} = require('../utils/fp')
+
+const KEYS = [
+  "rank",
+  "price_usd",
+  "price_btc",
+  "24h_volume_usd",
+  "market_cap_usd",
+  "available_supply",
+  "total_supply",
+  "percent_change_1h",
+  "percent_change_24h",
+  "percent_change_7d"
+];
 
 const coinMarketCap = {
   create(coinMarketCap, commonDate) {
@@ -29,7 +41,7 @@ const coinMarketCap = {
   },
 
   getNCoins(limit) {
-    return RawData.find()
+    return CoinMarketCap.find()
       .where('rank').ne(null)
       .where('price_usd').ne(null)
       .where('price_btc').ne(null)
@@ -45,7 +57,7 @@ const coinMarketCap = {
 
   getMaxValue(field){
     return new Promise(function(resolve, reject) {
-      RawData.findOne().sort({[field]: -1}).exec(
+      CoinMarketCap.findOne().sort({[field]: -1}).exec(
         (err, data) => {
           if(err) reject(err)
           resolve({[field]: data[field]})
@@ -54,15 +66,18 @@ const coinMarketCap = {
     });
   },
 
-  getMaxValues(fields) {
-    const promises = fields.map(
+  getMaxValues() {
+    const promises = KEYS.map(
       field => this.getMaxValue(field)
     )
-    const self = this;
     return new Promise(
-      (resolve, reject) => {
+      (resolve, reject) => {      
         Promise.all(promises).then(
-          maxValues => resolve(self.reduceValues(maxValues))
+          maxValues => resolve((values) => {
+            return values.reduce((acc, value) => {
+              return Object.assign(acc, value)
+            }, {})
+          })
         ).catch(
           err => reject(err)
         )
@@ -72,7 +87,7 @@ const coinMarketCap = {
 
   getMinValue(field){
     return new Promise(function(resolve, reject) {
-      RawData.findOne()
+      CoinMarketCap.findOne()
       .where(field).ne(null)
       .sort({[field]: 1}).exec(
         (err, data) => {
@@ -84,15 +99,18 @@ const coinMarketCap = {
 
   },
 
-  getMinValues(fields) {
-    const promises = fields.map(
+  getMinValues() {
+    const promises = KEYS.map(
       field => this.getMinValue(field)
     )
-    const self = this;
     return new Promise(
       (resolve, reject) => {
         Promise.all(promises).then(
-          minValues => resolve(self.reduceValues(minValues))
+          minValues => resolve((values) => {
+            return values.reduce((acc, value) => {
+              return Object.assign(acc, value)
+            }, {})
+          })
         ).catch(
           err => reject(err)
         )
