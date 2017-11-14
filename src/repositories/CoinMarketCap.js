@@ -1,4 +1,5 @@
 const CoinMarketCap = require('../models/CoinMarketCap');
+const reduceValue = require('../utils/fp')
 
 const KEYS = [
   "rank",
@@ -55,12 +56,12 @@ const coinMarketCap = {
       .limit(limit);
   },
 
-  getMaxValue(field){
-    return new Promise(function(resolve, reject) {
-      CoinMarketCap.findOne().sort({[field]: -1}).exec(
+  getMaxValue(field) {
+    return new Promise(function (resolve, reject) {
+      CoinMarketCap.findOne().sort({ [field]: -1 }).exec(
         (err, data) => {
-          if(err) reject(err)
-          resolve({[field]: data[field]})
+          if (err) reject(err)
+          resolve({ [field]: data[field] })
         }
       )
     });
@@ -71,30 +72,34 @@ const coinMarketCap = {
       field => this.getMaxValue(field)
     )
     return new Promise(
-      (resolve, reject) => {      
+      (resolve, reject) => {
         Promise.all(promises).then(
-          maxValues => resolve((values) => {
-            return values.reduce((acc, value) => {
+          maxValues => {
+            //ToDo
+            //Put this reduce function on fp
+            const reducedData = maxValues.reduce((acc, value) => {
               return Object.assign(acc, value)
             }, {})
-          })
+
+            resolve(reducedData)
+          }
         ).catch(
           err => reject(err)
-        )
+          )
       }
     )
   },
 
-  getMinValue(field){
-    return new Promise(function(resolve, reject) {
+  getMinValue(field) {
+    return new Promise(function (resolve, reject) {
       CoinMarketCap.findOne()
-      .where(field).ne(null)
-      .sort({[field]: 1}).exec(
+        .where(field).ne(null)
+        .sort({ [field]: 1 }).exec(
         (err, data) => {
-          if(err) reject(err)
-          resolve({[field]: data[field]})
+          if (err) reject(err)
+          resolve({ [field]: data[field] })
         }
-      )
+        )
     });
 
   },
@@ -113,7 +118,7 @@ const coinMarketCap = {
           })
         ).catch(
           err => reject(err)
-        )
+          )
       }
     )
   },
