@@ -1,0 +1,25 @@
+{
+  "name": "api_criptocurrencies",
+  "version": "1.0.0",
+  "description": "api for manipullating data on mongodb about criptocurrencies ",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "api",
+    "crud",
+    "get",
+    "set",
+    "manipulating",
+    "REST"
+  ],
+  "author": "getset",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "mongoose": "^4.13.2"
+  }
+}
