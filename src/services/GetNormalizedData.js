@@ -16,8 +16,8 @@ function makeNormalizedToCoinMarketCap(coins, maxValues, minValues) {
         available_supply: mathFunctions.commonNormalization('available_supply', coin, maxValues),
         total_supply: mathFunctions.commonNormalization('total_supply', coin, maxValues),
         percent_change_1h: mathFunctions.sigmoidFunction(coin['percent_change_1h']),
-        percent_change_24h: mathFunctions.sigmoidFunction(coin['percent_change_1h']),
-        percent_change_7d: mathFunctions.sigmoidFunction(coin['percent_change_1h'])
+        percent_change_24h: mathFunctions.sigmoidFunction(coin['percent_change_24h']),
+        percent_change_7d: mathFunctions.sigmoidFunction(coin['percent_change_7d'])
       }
     }
   )

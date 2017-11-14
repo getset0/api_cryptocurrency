@@ -18,4 +18,3 @@ const MathFunctions = {
 }
 
 module.exports = MathFunctions;
-
