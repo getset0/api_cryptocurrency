@@ -31,7 +31,7 @@ function coinMarketCapInfo(limit){
         Promise.all(promisses).then(maxAndMin => {
           const normalized = makeNormalizedToCoinMarketCap(coins, maxAndMin[0], maxAndMin[1]);
           resolve(normalized)
-        })
+        }).catch(err=>reject(err))
       })
       .catch(err => reject(err))
   })
