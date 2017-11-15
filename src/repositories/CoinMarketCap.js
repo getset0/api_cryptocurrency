@@ -56,6 +56,16 @@ const coinMarketCap = {
       .limit(limit);
   },
 
+  getAllTimeStamps() {
+    return new Promise(function(resolve, reject) {
+        CoinMarketCap.distinct('request_timestamp', (err, result) => {
+            if(err) reject(err);
+            resolve(result)
+          }
+      );
+    });
+  },
+
   getMaxValue(field) {
     return new Promise(function (resolve, reject) {
       CoinMarketCap.findOne().sort({ [field]: -1 }).exec(

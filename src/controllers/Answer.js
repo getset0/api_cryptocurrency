@@ -1,7 +1,7 @@
 'use strict';
 
 const Answer = {
-  returnResponseSuccess(res, data, msg) {
+  returnResponseSuccess(res, data, msg = "") {
     return res.json({
       success: true,
       data: data,

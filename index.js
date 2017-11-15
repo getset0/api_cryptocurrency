@@ -28,21 +28,21 @@ app.use(bodyParser.json());
 //       }
 //     )
 //   })
-  
+
 //   app.get('/max-values', (req, res) => {
 //     const fields = KEYS_INPUT.concat(KEYS_OUTPUT);
 //     rawData.getMaxValues(fields).then(
 //       (data) => res.json(data)
 //     )
 //   })
-  
+
 //   app.get('/min-values', (req, res) => {
 //     const fields = KEYS_INPUT.concat(KEYS_OUTPUT);
 //     rawData.getMinValues(fields).then(
 //       (data) => res.json(data)
 //     )
 //   })
-  
+app.get('/coinmakert/timestamps', coinMarketController.getTimestamps)
 app.get('/coinmakert/normalized-coins/:limit', coinMarketController.getNormalizedCoins)
 
 app.listen(SERVER_PORT, () => console.log(`Server started on ${SERVER_PORT}`) );
