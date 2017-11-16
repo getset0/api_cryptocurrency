@@ -66,6 +66,10 @@ const coinMarketCap = {
     });
   },
 
+  getEntriesByTimestamp(timestamp) {
+    return CoinMarketCap.find({request_timestamp: timestamp});
+  },
+
   getMaxValue(field) {
     return new Promise(function (resolve, reject) {
       CoinMarketCap.findOne().sort({ [field]: -1 }).exec(

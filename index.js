@@ -21,28 +21,8 @@ app.use(bodyParser.json());
 /*
  * Routes
  */
-// app.get('/all/:limit', (req, res) => {
-//     rawData.getAll(parseInt(req.params.limit)).then(
-//       (data) => {
-//         res.json(data)
-//       }
-//     )
-//   })
-
-//   app.get('/max-values', (req, res) => {
-//     const fields = KEYS_INPUT.concat(KEYS_OUTPUT);
-//     rawData.getMaxValues(fields).then(
-//       (data) => res.json(data)
-//     )
-//   })
-
-//   app.get('/min-values', (req, res) => {
-//     const fields = KEYS_INPUT.concat(KEYS_OUTPUT);
-//     rawData.getMinValues(fields).then(
-//       (data) => res.json(data)
-//     )
-//   })
-app.get('/coinmakert/timestamps', coinMarketController.getTimestamps)
-app.get('/coinmakert/normalized-coins/:limit', coinMarketController.getNormalizedCoins)
+app.get('/coinmarket/timestamps', coinMarketController.getTimestamps)
+app.get('/coinmarket/normalized-coins/:limit', coinMarketController.getNormalizedCoins)
+app.post('/coinmarket/block', coinMarketController.postBlock)
 
 app.listen(SERVER_PORT, () => console.log(`Server started on ${SERVER_PORT}`) );
