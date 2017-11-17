@@ -24,5 +24,7 @@ app.use(bodyParser.json());
 app.get('/coinmarket/timestamps', coinMarketController.getTimestamps)
 app.get('/coinmarket/normalized-coins/:limit', coinMarketController.getNormalizedCoins)
 app.post('/coinmarket/block', coinMarketController.postBlock)
+app.get('/coinmarket/get/all-timestamps/:id', coinMarketController.getById)
+app.get('/coinmarket/get/time-and-price-points/:id', coinMarketController.getTimePricePoints)
 
 app.listen(SERVER_PORT, () => console.log(`Server started on ${SERVER_PORT}`) );

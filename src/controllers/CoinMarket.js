@@ -2,6 +2,7 @@
 
 const coinMarketCapInfo = require("../services/GetNormalizedData");
 const coinMarketRepo = require("../repositories/CoinMarketCap");
+const fetchAndMount = require("../services/LogisticRegression");
 const answerController = require("./Answer");
 const hcluster = require("../math/hcluster");
 
@@ -28,6 +29,24 @@ const CoinMarket = {
       .catch(
         err => answerController.returnResponseError(res, err)
       )
+  },
+  
+  getById(req, res) {
+    const {id} = req.params;
+    return coinMarketRepo.getEntriesById(id)
+      .then(
+        data => answerController.returnResponseSuccess(res, data)
+      )
+      .catch(
+        err => answerController.returnResponseError(res, err)
+      )
+  },
+
+  getTimePricePoints(req, res) {
+    const {id} = req.params;
+    return fetchAndMount(id).then(resp => {
+      answerController.returnResponseSuccess(res, resp);
+    }).catch(err => answerController.returnResponseError(res, err))
   },
 
   postBlock(req, res) {

@@ -70,6 +70,10 @@ const coinMarketCap = {
     return CoinMarketCap.find({request_timestamp: timestamp});
   },
 
+  getEntriesById(id) {
+    return CoinMarketCap.find({id: id});
+  },
+
   getMaxValue(field) {
     return new Promise(function (resolve, reject) {
       CoinMarketCap.findOne().sort({ [field]: -1 }).exec(
