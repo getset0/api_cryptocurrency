@@ -58,7 +58,6 @@ function getValuesAndGenerateCSVFile(id) {
       .then((coinsOnTime) => {
         const googleSpreadData = mountAndGenerateCsv(coinsOnTime)
         resolve(googleSpreadData)
-
       })
       .catch(err => reject(err))
   })
@@ -67,7 +66,9 @@ function getValuesAndGenerateCSVFile(id) {
 function mountAndGenerateCsv(coins) {
   var csv = json2csv({ data: coins, fields: KEYS, del: "\t" });
 
-  fs.writeFile('file.csv', csv, function (err) {
+  const fileName = coins[0].id;
+
+  fs.writeFile(`${fileName}.csv`, csv, function (err) {
     if (err) throw err;
     console.log('file saved');
   });

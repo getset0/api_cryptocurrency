@@ -57,21 +57,21 @@ const coinMarketCap = {
   },
 
   getAllTimeStamps() {
-    return new Promise(function(resolve, reject) {
-        CoinMarketCap.distinct('request_timestamp', (err, result) => {
-            if(err) reject(err);
-            resolve(result)
-          }
+    return new Promise(function (resolve, reject) {
+      CoinMarketCap.distinct('request_timestamp', (err, result) => {
+        if (err) reject(err);
+        resolve(result)
+      }
       );
     });
   },
 
   getEntriesByTimestamp(timestamp) {
-    return CoinMarketCap.find({request_timestamp: timestamp});
+    return CoinMarketCap.find({ request_timestamp: timestamp });
   },
 
   getEntriesById(id) {
-    return CoinMarketCap.find({id: id});
+    return CoinMarketCap.find({ id: id });
   },
 
   getMaxValue(field) {
