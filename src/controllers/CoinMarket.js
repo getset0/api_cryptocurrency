@@ -1,14 +1,16 @@
 'use strict';
 
-const {fetchAndMount, getDataForGoogleSpreadsheet}  = require("../services/GetNormalizedData");
+const { getAllCoinsWithLimit, getValuesAndGenerateCSVFile, getAllTimeStamps, getEntriesById } = require("../services/GetCoinMarketCapData");
 const coinMarketRepo = require("../repositories/CoinMarketCap");
 const answerController = require("./Answer");
 const hcluster = require("../math/hcluster");
 
 const CoinMarket = {
-  getNormalizedCoins(req, res) {
+
+  // get all types of coins with a limited number
+  getAllCoinsWihtLimit(req, res) {
     const limit = parseInt(req.params.limit);
-    return coinMarketCapInfo(limit)
+    return getAllCoinsWithLimit(limit)
       .then(data => {
         return answerController.returnResponseSuccess(res, data)
       })
@@ -18,70 +20,66 @@ const CoinMarket = {
       })
   },
 
+  // get all timestamps of all coins
   getTimestamps(req, res) {
-    return coinMarketRepo.getAllTimeStamps()
+    return getAllTimeStamps()
       .then(
-        data => answerController.returnResponseSuccess(res, data)
+      data => answerController.returnResponseSuccess(res, data)
       )
       .catch(
-        err => answerController.returnResponseError(res, err)
+      err => answerController.returnResponseError(res, err)
       )
   },
-  
+
+  // get all timestamps of the same coin
   getById(req, res) {
-    const {id} = req.params;
-    return coinMarketRepo.getEntriesById(id)
+    const { id } = req.params;
+    return getEntriesById(id)
       .then(
-        data => answerController.returnResponseSuccess(res, data)
+      data => answerController.returnResponseSuccess(res, data)
       )
       .catch(
-        err => answerController.returnResponseError(res, err)
+      err => answerController.returnResponseError(res, err)
       )
   },
 
-  getValuesForGoogleSpreadsheet(req, res){
-    const {id} = req.params;
-    return getDataForGoogleSpreadsheet(id).then(resp => {
-      answerController.returnResponseSuccess(res, resp);
-    }).catch(err => answerController.returnResponseError(res, err))
-  },
-
-  getTimePricePoints(req, res) {
-    const {id} = req.params;
-    return fetchAndMount(id).then(resp => {
+  // mount data in csv file and also generate a csv file 
+  getValuesAndGenerateCSVFile(req, res) {
+    const { id } = req.params;
+    return getValuesAndGenerateCSVFile(id).then(resp => {
       answerController.returnResponseSuccess(res, resp);
     }).catch(err => answerController.returnResponseError(res, err))
   },
 
   postBlock(req, res) {
-    const {timestamp, algorithm} = req.body;
-    if(!timestamp) {
+    const { timestamp, algorithm } = req.body;
+    if (!timestamp) {
       return answerController.returnResponseError(res, "Timestamp field can't be blank");
     }
     return coinMarketRepo.getEntriesByTimestamp(timestamp)
-        .then(
-          data => {
-            const newData = data.map(coin => ({
-              id: coin.id,
-              vars: [coin.price_usd, coin.percent_change_7d]
-            }))
-            // console.log(data.length);
-            // answerController.returnResponseSuccess(res, data)
-            const colorCluster = hcluster()
-              .distance('euclidean') // support for 'euclidean' and 'angular'
-              .linkage('avg')        // support for 'avg', 'max' and 'min'
-              .posKey('vars')    // 'position' by default
-              .data(newData.slice(1000,1270))
+      .then(
+      data => {
+        const newData = data.map(coin => ({
+          id: coin.id,
+          vars: [coin.price_usd, coin.percent_change_7d]
+        }))
+        // console.log(data.length);
+        // answerController.returnResponseSuccess(res, data)
+        const colorCluster = hcluster()
+          .distance('euclidean') // support for 'euclidean' and 'angular'
+          .linkage('avg')        // support for 'avg', 'max' and 'min'
+          .posKey('vars')    // 'position' by default
+          .data(newData.slice(1000, 1270))
 
-            answerController.returnResponseSuccess(res, colorCluster.tree())
+        answerController.returnResponseSuccess(res, colorCluster.tree())
 
-          }
-        )
-        .catch(
-          err => answerController.returnResponseError(res, err)
-        )
+      }
+      )
+      .catch(
+      err => answerController.returnResponseError(res, err)
+      )
 
-    }
+  }
 
 }
 
