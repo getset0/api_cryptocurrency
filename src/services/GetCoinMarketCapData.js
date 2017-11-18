@@ -24,12 +24,12 @@ function makeNormalizedToCoinMarketCap(coins, maxValues, minValues) {
       return {
         id: coin.id,
         rank: mathFunctions.normalizeRank(coin.rank, POPULATION_OF_COINS),
-        price_usd: mathFunctions.commonNormalization('price_usd', coin, maxValues),
-        price_btc: mathFunctions.commonNormalization('price_btc', coin, maxValues),
-        ['24h_volume_usd']: mathFunctions.commonNormalization('24h_volume_usd', coin, maxValues),
-        market_cap_usd: mathFunctions.commonNormalization('market_cap_usd', coin, maxValues),
-        available_supply: mathFunctions.commonNormalization('available_supply', coin, maxValues),
-        total_supply: mathFunctions.commonNormalization('total_supply', coin, maxValues),
+        price_usd: mathFunctions.sigmoidFunction(coin['price_usd']),
+        price_btc: mathFunctions.sigmoidFunction(coin['price_btc']),
+        ['24h_volume_usd']: mathFunctions.sigmoidFunction(coin['24h_volume_usd']),
+        market_cap_usd: mathFunctions.sigmoidFunction(coin['market_cap_usd']),
+        available_supply: mathFunctions.sigmoidFunction(coin['available_supply']),
+        total_supply: mathFunctions.sigmoidFunction(coin['total_supply']),
         percent_change_1h: mathFunctions.sigmoidFunction(coin['percent_change_1h']),
         percent_change_24h: mathFunctions.sigmoidFunction(coin['percent_change_24h']),
         percent_change_7d: mathFunctions.sigmoidFunction(coin['percent_change_7d'])
@@ -76,17 +76,29 @@ function mountAndGenerateCsv(coins) {
   return csv;
 }
 
-function getAllTimeStamps(){
+function getAllTimeStamps() {
   return coinMarketCapRepository.getAllTimeStamps();
 }
 
-function getEntriesById(id){
+function getEntriesById(id) {
   return coinMarketCapRepository.getEntriesById(id);
 }
 
-module.exports = { 
+function getEntriesByIdNormalized(id) {
+  return new Promise((resolve, reject) => {
+    coinMarketCapRepository.getEntriesById(id).then(coinsOnTime => {
+      coinMarketCapRepository.getMaxValues(id).then(maxValues => {
+        const normalizedData = makeNormalizedToCoinMarketCap(coinsOnTime, maxValues)
+        resolve(normalizedData);
+      }) 
+    })    
+  })
+}
+
+module.exports = {
   getAllCoinsWithLimit,
   getValuesAndGenerateCSVFile,
   getAllTimeStamps,
-  getEntriesById
+  getEntriesById,
+  getEntriesByIdNormalized,
 };

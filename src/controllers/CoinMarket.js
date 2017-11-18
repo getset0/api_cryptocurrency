@@ -1,6 +1,6 @@
 'use strict';
 
-const { getAllCoinsWithLimit, getValuesAndGenerateCSVFile, getAllTimeStamps, getEntriesById } = require("../services/GetCoinMarketCapData");
+const { getAllCoinsWithLimit, getValuesAndGenerateCSVFile, getAllTimeStamps, getEntriesById, getEntriesByIdNormalized } = require("../services/GetCoinMarketCapData");
 const coinMarketRepo = require("../repositories/CoinMarketCap");
 const answerController = require("./Answer");
 const hcluster = require("../math/hcluster");
@@ -35,12 +35,15 @@ const CoinMarket = {
   getById(req, res) {
     const { id } = req.params;
     return getEntriesById(id)
-      .then(
-      data => answerController.returnResponseSuccess(res, data)
-      )
-      .catch(
-      err => answerController.returnResponseError(res, err)
-      )
+      .then(data => answerController.returnResponseSuccess(res, data))
+      .catch(err => answerController.returnResponseError(res, err))
+  },
+
+  getByIdNormalized(req, res) {
+    const { id } = req.params;
+    return getEntriesByIdNormalized(id)
+      .then(data => answerController.returnResponseSuccess(res, data))
+      .catch(err => answerController.returnResponseError(res, err))
   },
 
   // mount data in csv file and also generate a csv file 

@@ -25,6 +25,7 @@ app.get('/coinmarket/timestamps', coinMarketController.getTimestamps)
 app.get('/coinmarket/normalized-coins/:limit', coinMarketController.getAllCoinsWihtLimit)
 app.post('/coinmarket/block', coinMarketController.postBlock)
 app.get('/coinmarket/all-timestamps/:id', coinMarketController.getById)
+app.get('/coinmarket/all-timestamps/normalized/:id', coinMarketController.getByIdNormalized)
 app.get('/coinmarket/csv-values/:id', coinMarketController.getValuesAndGenerateCSVFile);
 
 app.listen(SERVER_PORT, () => console.log(`Server started on ${SERVER_PORT}`) );
