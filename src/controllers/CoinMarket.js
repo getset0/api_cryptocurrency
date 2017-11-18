@@ -1,18 +1,15 @@
 'use strict';
 
-const coinMarketCapInfo = require("../services/GetNormalizedData");
+const {fetchAndMount, getDataForGoogleSpreadsheet}  = require("../services/GetNormalizedData");
 const coinMarketRepo = require("../repositories/CoinMarketCap");
-const fetchAndMount = require("../services/LogisticRegression");
 const answerController = require("./Answer");
 const hcluster = require("../math/hcluster");
 
 const CoinMarket = {
   getNormalizedCoins(req, res) {
-    console.log('got here');
     const limit = parseInt(req.params.limit);
     return coinMarketCapInfo(limit)
       .then(data => {
-        console.log('got haa');
         return answerController.returnResponseSuccess(res, data)
       })
       .catch(err => {
@@ -40,6 +37,13 @@ const CoinMarket = {
       .catch(
         err => answerController.returnResponseError(res, err)
       )
+  },
+
+  getValuesForGoogleSpreadsheet(req, res){
+    const {id} = req.params;
+    return getDataForGoogleSpreadsheet(id).then(resp => {
+      answerController.returnResponseSuccess(res, resp);
+    }).catch(err => answerController.returnResponseError(res, err))
   },
 
   getTimePricePoints(req, res) {
