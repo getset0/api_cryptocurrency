@@ -1,17 +1,17 @@
 'use strict';
 
-const coinMarketCapInfo = require("../services/GetNormalizedData");
+const { getAllCoinsWithLimit, getValuesAndGenerateCSVFile, getAllTimeStamps, getEntriesById, getEntriesByIdNormalized } = require("../services/GetCoinMarketCapData");
 const coinMarketRepo = require("../repositories/CoinMarketCap");
 const answerController = require("./Answer");
 const hcluster = require("../math/hcluster");
 
 const CoinMarket = {
-  getNormalizedCoins(req, res) {
-    console.log('got here');
+
+  // get all types of coins with a limited number
+  getAllCoinsWihtLimit(req, res) {
     const limit = parseInt(req.params.limit);
-    return coinMarketCapInfo(limit)
+    return getAllCoinsWithLimit(limit)
       .then(data => {
-        console.log('got haa');
         return answerController.returnResponseSuccess(res, data)
       })
       .catch(err => {
@@ -20,19 +20,43 @@ const CoinMarket = {
       })
   },
 
+  // get all timestamps of all coins
   getTimestamps(req, res) {
-    return coinMarketRepo.getAllTimeStamps()
+    return getAllTimeStamps()
       .then(
-        data => answerController.returnResponseSuccess(res, data)
+      data => answerController.returnResponseSuccess(res, data)
       )
       .catch(
-        err => answerController.returnResponseError(res, err)
+      err => answerController.returnResponseError(res, err)
       )
   },
 
+  // get all timestamps of the same coin
+  getById(req, res) {
+    const { id } = req.params;
+    return getEntriesById(id)
+      .then(data => answerController.returnResponseSuccess(res, data))
+      .catch(err => answerController.returnResponseError(res, err))
+  },
+
+  getByIdNormalized(req, res) {
+    const { id } = req.params;
+    return getEntriesByIdNormalized(id)
+      .then(data => answerController.returnResponseSuccess(res, data))
+      .catch(err => answerController.returnResponseError(res, err))
+  },
+
+  // mount data in csv file and also generate a csv file
+  getValuesAndGenerateCSVFile(req, res) {
+    const { id } = req.params;
+    return getValuesAndGenerateCSVFile(id).then(resp => {
+      answerController.returnResponseSuccess(res, resp);
+    }).catch(err => answerController.returnResponseError(res, err))
+  },
+
   postBlock(req, res) {
-    const {timestamp, algorithm} = req.body;
-    if(!timestamp) {
+    const { timestamp, algorithm } = req.body;
+    if (!timestamp) {
       return answerController.returnResponseError(res, "Timestamp field can't be blank");
     }
     return coinMarketRepo.getEntriesByTimestamp(timestamp)
@@ -50,15 +74,15 @@ const CoinMarket = {
               .posKey('vars')    // 'position' by default
               .data(newData.slice(1,300))
 
-            answerController.returnResponseSuccess(res, colorCluster.tree())
+        answerController.returnResponseSuccess(res, colorCluster.tree())
 
-          }
-        )
-        .catch(
-          err => answerController.returnResponseError(res, err)
-        )
+      }
+      )
+      .catch(
+      err => answerController.returnResponseError(res, err)
+      )
 
-    }
+  }
 
 }
 

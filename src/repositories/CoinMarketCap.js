@@ -57,11 +57,11 @@ const coinMarketCap = {
   },
 
   getAllTimeStamps() {
-    return new Promise(function(resolve, reject) {
-        CoinMarketCap.distinct('request_timestamp', (err, result) => {
-            if(err) reject(err);
-            resolve(result)
-          }
+    return new Promise(function (resolve, reject) {
+      CoinMarketCap.distinct('request_timestamp', (err, result) => {
+        if (err) reject(err);
+        resolve(result)
+      }
       );
     });
   },
@@ -70,9 +70,9 @@ const coinMarketCap = {
     return CoinMarketCap.find({request_timestamp: timestamp}).sort({ price_usd: -1 });
   },
 
-  getMaxValue(field) {
+  getMaxValue(field, id) {
     return new Promise(function (resolve, reject) {
-      CoinMarketCap.findOne().sort({ [field]: -1 }).exec(
+      CoinMarketCap.findOne({id: id}).sort({ [field]: -1 }).exec(
         (err, data) => {
           if (err) reject(err)
           resolve({ [field]: data[field] })
@@ -81,9 +81,9 @@ const coinMarketCap = {
     });
   },
 
-  getMaxValues() {
+  getMaxValues(id) {
     const promises = KEYS.map(
-      field => this.getMaxValue(field)
+      field => this.getMaxValue(field, id)
     )
     return new Promise(
       (resolve, reject) => {
