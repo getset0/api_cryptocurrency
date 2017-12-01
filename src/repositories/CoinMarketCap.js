@@ -67,7 +67,7 @@ const coinMarketCap = {
   },
 
   getEntriesByTimestamp(timestamp) {
-    return CoinMarketCap.find({request_timestamp: timestamp});
+    return CoinMarketCap.find({request_timestamp: timestamp}).sort({ price_usd: -1 });
   },
 
   getMaxValue(field) {
