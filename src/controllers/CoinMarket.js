@@ -40,7 +40,7 @@ const CoinMarket = {
           data => {
             const newData = data.map(coin => ({
               id: coin.id,
-              vars: [coin.price_usd, coin.percent_change_7d]
+              vars: [coin.price_usd, coin.percent_change_7d, coin.market_cap_usd]
             }))
             // console.log(data.length);
             // answerController.returnResponseSuccess(res, data)
@@ -48,7 +48,7 @@ const CoinMarket = {
               .distance('euclidean') // support for 'euclidean' and 'angular'
               .linkage('avg')        // support for 'avg', 'max' and 'min'
               .posKey('vars')    // 'position' by default
-              .data(newData.slice(1000,1270))
+              .data(newData.slice(1,300))
 
             answerController.returnResponseSuccess(res, colorCluster.tree())
 
